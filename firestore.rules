@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function isLeader() {
+      return signedIn() && exists(/databases/$(database)/documents/leaders/$(myEmail()));
+    }
+
+    // Public: the "New here?" welcome info, so newcomers can read it before signing in.
+    match /settings/about { allow read: if true; allow write: if isLeader(); }
+
+    // Everything else in settings (leader contacts, leader name list): signed-in members only.
+    match /settings/{id} { allow read: if signedIn(); allow write: if isLeader(); }
+
+    // Calendar: signed-in members read, leaders write.
+    match /events/{eventId} {
+      allow read: if signedIn();
+      allow write: if isLeader();
+
+      // RSVPs and helper sign-ups: one document per person per event, keyed by their user id.
+      // Members see who's coming. Each person can only change their own reply. Leaders can change any.
+      match /responses/{uid} {
+        allow read: if signedIn();
+        allow create, update: if isLeader() || (
+          signedIn() && request.auth.uid == uid
+          && request.resource.data.uid == uid
+          && request.resource.data.eventId == eventId
+          && request.resource.data.status in ['', 'going', 'maybe', 'no']
+          && request.resource.data.guests is int && request.resource.data.guests >= 0 && request.resource.data.guests <= 10
+          && request.resource.data.roles is list && request.resource.data.roles.size() <= 10
+          && request.resource.data.name is string && request.resource.data.name.size() <= 60
+        );
+        allow delete: if isLeader() || (signedIn() && request.auth.uid == uid);
+      }
+    }
+
+    // Lets the site load every reply in one go (for counts and "Your plans").
+    match /{path=**}/responses/{uid} { allow read: if signedIn(); }
+
+    // Leader-only notes: hidden from everyone else.
+    match /leaderNotes/{id} { allow read, write: if isLeader(); }
+
+    // Member profiles (name + email). Each person writes their own; leaders can see the member list.
+    match /users/{uid} {
+      allow read: if isLeader() || (signedIn() && request.auth.uid == uid);
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.name is string && request.resource.data.name.size() <= 60
+        && request.resource.data.keys().hasOnly(['name', 'email', 'joinedAt', 'lastSeen']);
+      allow delete: if isLeader();
+    }
+
+    // Leader accounts, keyed by lowercase sign-in email.
+    // A signed-in person may read their own entry (that's how the site checks access).
+    // Leaders add and remove leaders; nobody can create, change or remove the owner from the site.
+    match /leaders/{email} {
+      allow read: if isLeader() || (signedIn() && myEmail() == email);
+      allow create: if isLeader() && request.resource.data.get('owner', false) != true;
+      allow update: if isLeader() && resource.data.get('owner', false) != true
+                    && request.resource.data.get('owner', false) != true;
+      allow delete: if isLeader() && resource.data.get('owner', false) != true;
+    }
+  }
+}

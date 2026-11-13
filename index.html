@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Ignite young adults: upcoming nights, leaders, passages, RSVPs and info for new people.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 3c2 6 9 10 9 19a9 9 0 0 1-18 0c0-4 2-7 4-9 0 3 1 5 3 6-1-6 0-11 2-16z' fill='%23E04E1B'/%3E%3C/svg%3E">
+<title>Ignite · Young Adults</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: a single column "bulletin" — next-up hero, then a switchable list / month grid; leaders get edit controls in place. */
+:root{
+  --bg:#FBF8F5; --surface:#FFFFFF; --sunk:#F3EEE9; --line:#E7DFD8;
+  --ink:#1D1A22; --muted:#6B6470; --accent:#E04E1B; --accent-ink:#FFFFFF; --accent-soft:#FDE6DC;
+  --t-night:#E04E1B; --t-social:#C2850C; --t-serve:#2F8F6B; --t-worship:#6A55C9; --t-special:#C2367A;
+  --shadow:0 1px 2px rgba(40,20,10,.06),0 6px 24px rgba(40,20,10,.06);
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#16131A; --surface:#1F1B24; --sunk:#1A161E; --line:#322B36;
+  --ink:#F3EEF0; --muted:#A79FAA; --accent:#FF6A33; --accent-ink:#1A0E08; --accent-soft:#3A2119;
+  --t-night:#FF6A33; --t-social:#E3A93A; --t-serve:#4FC39A; --t-worship:#9C8BF0; --t-special:#EE6BA9;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16131A; --surface:#1F1B24; --sunk:#1A161E; --line:#322B36;
+  --ink:#F3EEF0; --muted:#A79FAA; --accent:#FF6A33; --accent-ink:#1A0E08; --accent-soft:#3A2119;
+  --t-night:#FF6A33; --t-social:#E3A93A; --t-serve:#4FC39A; --t-worship:#9C8BF0; --t-special:#EE6BA9;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* Header */
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.flame{width:40px;height:40px;flex:none}
+.brand h1{font-size:34px;font-weight:800;line-height:1}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.danger{color:var(--t-special)}
+.btn.danger.armed{background:var(--t-special);color:#fff;border-color:var(--t-special)}
+
+/* Next up */
+.next{position:relative;overflow:hidden;background:var(--ink);color:var(--bg);border-radius:20px;padding:24px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;cursor:pointer;text-align:left;border:0;width:100%}
+.next::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.45;pointer-events:none}
+.next .when{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--accent);color:var(--accent-ink);border-radius:14px;width:84px;height:92px;font-family:var(--display);line-height:1;flex:none}
+.next .when .m{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.next .when .d{font-size:40px;font-weight:800;margin-top:4px}
+.next .info{min-width:0;position:relative;z-index:1}
+.next .eyebrow{color:color-mix(in srgb,var(--bg) 65%,transparent)}
+.next h2{font-size:28px;font-weight:700;margin:4px 0 10px;line-height:1.1}
+.facts{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px}
+.facts span{display:inline-flex;gap:6px;align-items:baseline}
+.facts b{font-weight:600;opacity:.6;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.next.empty{cursor:default;grid-template-columns:1fr}
+
+/* Toolbar */
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--sunk);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.legend{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px 3px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c);white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
+
+/* List */
+.month-group{display:flex;flex-direction:column;gap:10px}
+.month-group h3{font-size:18px;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:start;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;text-align:left;width:100%}
+.row:hover{border-color:color-mix(in srgb,var(--c,var(--accent)) 60%,var(--line))}
+.row.past{opacity:.6}
+.datebox{display:flex;flex-direction:column;align-items:center;font-family:var(--display);line-height:1;padding-top:2px;border-left:3px solid var(--c);}
+.datebox .dow{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.datebox .num{font-size:28px;font-weight:800;margin-top:4px}
+.row .body{min-width:0;display:flex;flex-direction:column;gap:6px}
+.row .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row h4{margin:0;font-family:var(--display);font-size:18px;font-weight:700;line-height:1.2}
+.row .facts{color:var(--muted);font-size:13.5px}
+.row .facts b{opacity:1;color:var(--muted)}
+.row .facts .v{color:var(--ink)}
+.list{display:flex;flex-direction:column;gap:24px}
+.pastToggle{align-self:center}
+
+/* Month */
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line)}
+.cal-head h3{font-size:20px}
+.icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;width:34px;height:34px;display:inline-grid;place-items:center;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.dow-h{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;padding:8px 0;background:var(--sunk);border-bottom:1px solid var(--line)}
+.cell{min-height:92px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px;display:flex;flex-direction:column;gap:4px;min-width:0;background:var(--surface);text-align:left;border-top:0;border-left:0}
+.cell:nth-child(7n){border-right:0}
+.cell.out{background:var(--sunk);color:var(--muted)}
+.cell .n{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;width:24px;height:24px;display:grid;place-items:center;border-radius:50%}
+.cell.today .n{background:var(--accent);color:var(--accent-ink)}
+.pill{font-size:11.5px;font-weight:600;line-height:1.25;padding:3px 6px;border-radius:6px;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--ink);border-left:3px solid var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:left;border-top:0;border-right:0;border-bottom:0}
+.dots{display:none;gap:3px;flex-wrap:wrap}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.day-detail{padding:14px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line)}
+@media (max-width:560px){
+  .cell{min-height:56px;padding:4px;align-items:center}
+  .cell .pill{display:none}
+  .dots{display:flex}
+  .next{grid-template-columns:1fr;padding:20px}
+  .next h2{font-size:24px}
+  .brand h1{font-size:28px}
+}
+
+/* Status */
+.status{padding:28px 20px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:14px}
+.status h3{color:var(--ink);font-size:18px;margin-bottom:4px}
+.note{font-size:13px;color:var(--muted);text-align:center}
+
+/* Sheet (modal) */
+.overlay{position:fixed;inset:0;background:rgba(10,6,12,.45);display:grid;place-items:center;z-index:50;padding:16px;padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(16px,env(safe-area-inset-bottom,0px))}
+.sheet{background:var(--surface);color:var(--ink);border-radius:20px;width:min(560px,100%);max-height:100%;overflow:auto;box-shadow:var(--shadow);border:1px solid var(--line)}
+.sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 20px 0}
+.sheet-body{padding:16px 20px 20px;display:flex;flex-direction:column;gap:16px}
+.sheet h2{font-size:26px;line-height:1.1}
+.dl{display:grid;grid-template-columns:96px 1fr;gap:10px 14px;margin:0}
+.dl dt{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.dl dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.dl a{color:var(--accent);font-weight:600}
+.notes{white-space:pre-wrap;background:var(--sunk);border-radius:12px;padding:12px 14px;margin:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+form{display:flex;flex-direction:column;gap:12px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.f-row{grid-template-columns:1fr}}
+label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--muted);min-width:0}
+input,select,textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;min-width:0}
+textarea{min-height:84px;resize:vertical}
+.err{color:var(--t-special);font-size:13px;margin:0}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(8px);opacity:.6}}}
+
+/* Leader hub */
+.seg .lead-tab{color:var(--accent)}
+.hub{display:flex;flex-direction:column;gap:28px}
+.hub-intro{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.hub-intro h2{font-size:24px}
+.hub-intro p{margin:4px 0 0;color:var(--muted);font-size:14px;max-width:52ch}
+.lock{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat .k{font-size:12px;font-weight:600;color:var(--muted)}
+.stat .v{font-family:var(--display);font-size:32px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat.warn .v{color:var(--accent)}
+.hub section{display:flex;flex-direction:column;gap:10px}
+.hub h3{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hub h3 .count{font-family:var(--body);font-size:12px;font-weight:600;color:var(--muted)}
+.sub{margin:0;color:var(--muted);font-size:13.5px}
+.fix{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:end;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.fix .t{min-width:0}
+.fix .t strong{display:block;font-family:var(--display);font-size:16px;line-height:1.2;overflow-wrap:anywhere}
+.fix .t span{font-size:13px;color:var(--muted)}
+.fix input.missing{border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.fix .saved{font-size:12px;color:var(--t-serve);font-weight:600}
+@media (max-width:640px){.fix{grid-template-columns:1fr 1fr}.fix .t{grid-column:1/-1}.fix .go{grid-column:1/-1}}
+.ok{padding:14px;border-radius:14px;background:color-mix(in srgb,var(--t-serve) 12%,transparent);color:var(--ink);font-size:14px}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;background:var(--sunk);border-bottom:1px solid var(--line)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.date{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}
+td .gap{color:var(--accent);font-weight:600}
+td .who{color:var(--muted);font-size:12.5px}
+.link-btn{border:0;background:none;color:var(--accent);font-weight:600;padding:0}
+.roster{display:flex;flex-wrap:wrap;gap:8px}
+.person{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 6px 5px 12px;font-weight:600;font-size:14px}
+.person button{border:0;background:var(--sunk);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.inline-add{display:flex;gap:8px;max-width:420px}
+.inline-add input{flex:1}
+.steps{margin:0;padding:16px 16px 16px 36px;background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.steps li{padding-left:4px}
+.callout{font-size:13.5px;background:var(--sunk);border-radius:12px;padding:12px 14px;margin:0;color:var(--ink)}
+.private{background:var(--accent-soft);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.private .lock{background:none;padding:0}
+.private p{margin:0;white-space:pre-wrap}
+.edited{font-size:12.5px;color:var(--muted);margin:0}
+
+/* New here */
+.newbie{display:flex;flex-direction:column;gap:24px}
+.welcome{position:relative;overflow:hidden;background:var(--ink);color:var(--bg);border-radius:20px;padding:28px 24px;display:flex;flex-direction:column;gap:10px}
+.welcome::after{content:"";position:absolute;left:-80px;bottom:-110px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.4;pointer-events:none}
+.welcome>*{position:relative;z-index:1}
+.welcome .eyebrow{color:var(--accent)}
+.welcome h2{font-size:clamp(28px,6vw,40px);font-weight:800;line-height:1.05}
+.lede{margin:0;font-size:16.5px;line-height:1.6;max-width:62ch;white-space:pre-wrap}
+.lede.muted{opacity:.75}
+.welcome .btn{background:transparent;color:var(--bg);border-color:color-mix(in srgb,var(--bg) 35%,transparent)}
+.basics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.basic{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.basic .k{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.basic .v{font-family:var(--display);font-size:17px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.first-night .eyebrow{color:var(--accent)}
+.nsec{display:flex;flex-direction:column;gap:10px}
+.nsec h3{font-size:20px;font-weight:700}
+.prose{margin:0;max-width:65ch;line-height:1.65;white-space:pre-wrap}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.who-row{display:flex;gap:12px;align-items:center;min-width:0}
+.who-row>div{min-width:0}
+.avatar{width:48px;height:48px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:17px;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c)}
+.card h4{margin:0;font-family:var(--display);font-size:18px;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.role{font-size:13px;color:var(--muted);font-weight:500}
+.bio{margin:0;font-size:14px;line-height:1.55;color:var(--ink)}
+.contacts{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.contact{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:8px;align-items:baseline;font-size:14px}
+.contact .k{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.contact .cv{overflow-wrap:anywhere;user-select:all;font-variant-numeric:tabular-nums}
+.plist{display:flex;flex-direction:column;gap:12px}
+.pf{border:1px solid var(--line);border-radius:14px;padding:12px 14px 14px;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pf legend{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:0 6px}
+@media (max-width:560px){.seg button{padding:6px 10px;font-size:13.5px}}
+
+/* Accounts + sign-in */
+.acct-list{display:flex;flex-direction:column;gap:8px}
+.acct{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.acct-who{display:flex;flex-direction:column;min-width:0}
+.acct-who span{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.lead-form{display:grid;grid-template-columns:1fr 1.3fr auto;gap:10px;align-items:end}
+@media (max-width:560px){.lead-form{grid-template-columns:1fr}}
+.auth{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted);text-align:center}
+.link-btn.quiet{color:var(--muted);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+<style>
+/* Members: gate, RSVP, roles */
+header{align-items:center}
+.me{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;font-weight:600;font-size:14px;max-width:100%}
+.me-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px}
+.avatar.sm{width:30px;height:30px;font-size:12px}
+.gate-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+.gate-card h2{font-size:24px;margin-top:4px}
+.gate-card p{margin:4px 0 0;color:var(--muted);max-width:56ch}
+.gate-card .eyebrow{color:var(--accent)}
+.btn.google{justify-content:center;padding:11px 18px;font-size:15px;background:var(--surface);border-color:var(--line);width:100%;max-width:360px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;max-width:360px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.gate-form{display:flex;flex-direction:column;gap:10px;max-width:360px}
+.gate-form.inline{flex-direction:row}
+.gate-form.inline input{flex:1}
+@media (max-width:420px){.gate-form.inline{flex-direction:column}}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--sunk);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+.badge.yes{background:color-mix(in srgb,var(--t-serve) 14%,transparent);color:var(--t-serve);border-color:transparent}
+.badge.need{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.plans{display:flex;flex-direction:column;gap:10px}
+.plans h3{font-size:18px}
+.plan-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.plan{display:flex;flex-direction:column;gap:2px;text-align:left;background:color-mix(in srgb,var(--c) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 35%,var(--line));border-radius:14px;padding:12px 14px;min-width:0}
+.plan .pd{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.plan strong{font-family:var(--display);font-size:16px;line-height:1.2;overflow-wrap:anywhere}
+.plan .pm{font-size:13px;color:var(--muted)}
+.block{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line);padding-top:16px}
+.block-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.block-head h3{font-size:18px}
+.rsvp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rsvp button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 8px;font-weight:600}
+.rsvp button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.rsvp button[data-st="no"][aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.rsvp button:disabled{opacity:.5;cursor:not-allowed}
+.guests{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.stepper button{border:0;background:var(--sunk);width:36px;height:34px;font-size:18px}
+.stepper span{min-width:36px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.names{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.names .k{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.nm{font-size:13px;background:var(--sunk);border-radius:999px;padding:3px 10px}
+.nm.me{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.roles{display:flex;flex-direction:column;gap:8px}
+.role-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
+.role-info{display:flex;flex-direction:column;min-width:0}
+.role-info .sub{overflow-wrap:anywhere}
+.btn.on{background:color-mix(in srgb,var(--t-serve) 16%,transparent);color:var(--t-serve);border-color:transparent}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.roles-ed{display:flex;flex-direction:column;gap:8px}
+.role-edit{display:grid;grid-template-columns:1fr 80px auto;gap:8px;align-items:center}
+.ideas{display:flex;flex-wrap:wrap;gap:6px}
+.idea{border:1px dashed var(--line);background:none;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:600;color:var(--muted)}
+.idea:hover{border-color:var(--accent);color:var(--accent)}
+label.check{flex-direction:row;align-items:center;gap:8px;font-size:14px;letter-spacing:0;color:var(--ink);font-weight:500}
+label.check input{width:auto}
+.stats.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:640px){.stats.four,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+table.narrow{min-width:420px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg class="flame" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3c2 6 9 10 9 19a9 9 0 0 1-18 0c0-4 2-7 4-9 0 3 1 5 3 6-1-6 0-11 2-16z" fill="var(--accent)"/><path d="M20 20c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 2-4 0 1 1 2 2 2-.5-2 0-4 0-6z" fill="var(--bg)"/></svg>
+      <div><h1>Ignite</h1><p>Young adults · nights, leaders &amp; passages</p></div>
+    </div>
+    <div class="me" id="meChip" hidden></div>
+  </header>
+
+  <section id="gate" class="gate" hidden></section>
+
+  <button class="next empty" id="nextUp" type="button" disabled hidden>
+    <div class="info"><div class="eyebrow">Next up</div><h2>Loading the schedule…</h2></div>
+  </button>
+
+  <div class="toolbar" id="toolbar" hidden>
+    <div class="seg" role="group" aria-label="View">
+      <button type="button" id="vList" aria-pressed="true">Upcoming</button>
+      <button type="button" id="vMonth" aria-pressed="false">Month</button>
+      <button type="button" id="vNew" aria-pressed="false">New here?</button>
+      <button type="button" id="vLeaders" class="lead-tab" aria-pressed="false" hidden>Leaders</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <section id="listView" class="list" hidden></section>
+  <section id="monthView" hidden></section>
+  <section id="newView" class="newbie"></section>
+  <section id="leadersView" class="hub" hidden></section>
+  <p class="note" id="footNote"></p>
+  <div class="auth" id="authBar"></div>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" id="sheet"></div>
+</div>
+<datalist id="rosterList"></datalist>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+/* ---------- Constants & helpers ---------- */
+const TYPES={
+  night:{label:"Ignite Night",c:"var(--t-night)"},
+  social:{label:"Social",c:"var(--t-social)"},
+  serve:{label:"Serve",c:"var(--t-serve)"},
+  worship:{label:"Worship",c:"var(--t-worship)"},
+  special:{label:"Special",c:"var(--t-special)"}
+};
+const ROLE_IDEAS=["Setup","Snacks","Clean-up","Greeter","Worship","Drinks","Rides","Games"];
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rid=()=>Math.random().toString(36).slice(2,9);
+function parseD(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function todayIso(){return iso(new Date())}
+function fmtTime(t){if(!t)return"";const [h,m]=t.split(":").map(Number);const ap=h>=12?"PM":"AM";const hh=((h+11)%12)+1;return hh+(m?":"+String(m).padStart(2,"0"):"")+" "+ap}
+function timeRange(e){if(!e.time)return"";return fmtTime(e.time)+(e.endTime?" – "+fmtTime(e.endTime):"")}
+function typeOf(e){return TYPES[e.type]||TYPES.night}
+function shortDate(s){const d=parseD(s);return DOW[d.getDay()]+" "+MONTHS[d.getMonth()].slice(0,3)+" "+d.getDate()}
+function passageLink(p){return "https://www.biblegateway.com/passage/?search="+encodeURIComponent(p)+"&version=NIV"}
+function initials(n){return String(n||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]||"").join("").toUpperCase()||"?"}
+const store={get(k){try{return localStorage.getItem(k)}catch(_){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(_){}},del(k){try{localStorage.removeItem(k)}catch(_){}}};
+
+/* ---------- State ---------- */
+let db=null, auth=null, me=null, myId=null, profile=null, profileLoaded=false, canEdit=false;
+let events=[], responses=[], about=null, aboutLoaded=false, contacts={}, roster=[], leaderNotes={}, leaders=[], members=[];
+let loaded=false, showPast=false, view="list", selectedDay=null;
+let memberUnsubs=[], leaderUnsubs=[];
+let monthCursor=(()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)})();
+let savedView=store.get("ignite-view")||"list";
+
+function myName(){return (profile&&profile.name)||(me&&me.displayName)||(me&&me.email?me.email.split("@")[0]:"Someone")}
+function stamp(){return{updatedAt:new Date().toISOString(),updatedBy:myId||"",updatedByName:myName()}}
+function editedBy(e){if(!e.updatedAt)return"";const d=new Date(e.updatedAt);
+  const who=e.updatedBy&&e.updatedBy===myId?"you":(e.updatedByName||"a leader");
+  return "Edited by "+who+" · "+MONTHS[d.getMonth()].slice(0,3)+" "+d.getDate()}
+function sorted(){return events.slice().sort((a,b)=>(a.date+(a.time||"99")).localeCompare(b.date+(b.time||"99")))}
+
+/* ---------- RSVP / roles math ---------- */
+function respFor(eid){return responses.filter(r=>r.eventId===eid)}
+function myResp(eid){return responses.find(r=>r.eventId===eid&&r.uid===myId)||null}
+function goingCount(eid){return respFor(eid).filter(r=>r.status==="going").reduce((n,r)=>n+1+(Number(r.guests)||0),0)}
+function roleTaken(eid,roleId){return respFor(eid).filter(r=>Array.isArray(r.roles)&&r.roles.includes(roleId))}
+function openRoles(e){return (e.roles||[]).reduce((n,ro)=>n+Math.max(0,(Number(ro.slots)||1)-roleTaken(e.id,ro.id).length),0)}
+function totalSlots(e){return (e.roles||[]).reduce((n,ro)=>n+(Number(ro.slots)||1),0)}
+
+/* ---------- Legend ---------- */
+$("#legend").innerHTML=Object.values(TYPES).map(t=>`<span class="chip" style="--c:${t.c}">${t.label}</span>`).join("");
+
+/* ---------- Gate (signed out) ---------- */
+function renderGate(){
+  const g=$("#gate");
+  if(me||!auth){g.hidden=true;g.innerHTML="";return}
+  g.hidden=false;
+  const pending=store.get("ignite-email-pending");
+  const finishing=auth.isSignInWithEmailLink&&auth.isSignInWithEmailLink(location.href)&&!store.get("ignite-email");
+  g.innerHTML=`<div class="gate-card">
+    <div><span class="eyebrow">Members</span><h2>Sign in to see the calendar</h2>
+    <p>See every night, who's leading and the passage. RSVP to events and sign up to help.</p></div>
+    ${finishing?`<form id="finishForm" class="gate-form" novalidate><label>Confirm your email to finish signing in<input id="finishEmail" type="email" autocomplete="email" placeholder="you@email.com"></label><button class="btn primary" type="submit">Finish signing in</button></form>`:`
+    <button type="button" class="btn google" id="gBtn"><svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M17.6 9.2c0-.6-.1-1.2-.2-1.7H9v3.3h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.5z"/><path fill="#34A853" d="M9 18c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.9 10.7a5.4 5.4 0 0 1 0-3.4V5H.9a9 9 0 0 0 0 8z"/><path fill="#EA4335" d="M9 3.6c1.3 0 2.5.5 3.4 1.4l2.6-2.6A9 9 0 0 0 .9 5l3 2.3C4.6 5.2 6.6 3.6 9 3.6z"/></svg>Continue with Google</button>
+    <div class="or"><span>or get a sign-in link by email</span></div>
+    ${pending?`<p class="ok">We sent a sign-in link to <b>${esc(pending)}</b>. Open it on this device to finish. <button type="button" class="link-btn" id="resetEmail">Use a different email</button></p>`:
+    `<form id="emailForm" class="gate-form inline" novalidate><input id="emailIn" type="email" autocomplete="email" placeholder="you@email.com" aria-label="Email"><button class="btn" type="submit">Email me a link</button></form>`}`}
+    <p class="err" id="gateErr" hidden></p>
+  </div>`;
+  const gb=$("#gBtn"); if(gb)gb.onclick=signInGoogle;
+  const ef=$("#emailForm"); if(ef)ef.onsubmit=sendEmailLink;
+  const re=$("#resetEmail"); if(re)re.onclick=()=>{store.del("ignite-email-pending");renderGate()};
+  const ff=$("#finishForm"); if(ff)ff.onsubmit=ev=>{ev.preventDefault();finishEmailLink($("#finishEmail").value.trim())};
+}
+function gateErr(t){const e=$("#gateErr");if(e){e.hidden=false;e.textContent=t}}
+function signInGoogle(){
+  const p=new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({prompt:"select_account"});
+  auth.signInWithPopup(p).catch(err=>{
+    if(err&&(err.code==="auth/popup-blocked"||err.code==="auth/operation-not-supported-in-this-environment"))auth.signInWithRedirect(p);
+    else if(err&&err.code!=="auth/popup-closed-by-user"&&err.code!=="auth/cancelled-popup-request")gateErr("Google sign-in didn't work. Try again, or use the email link instead.");
+  });
+}
+async function sendEmailLink(ev){
+  ev.preventDefault();
+  const email=$("#emailIn").value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){gateErr("Enter a full email address, like you@email.com.");return}
+  try{
+    await auth.sendSignInLinkToEmail(email,{url:location.origin+location.pathname,handleCodeInApp:true});
+    store.set("ignite-email",email);store.set("ignite-email-pending",email);renderGate();
+  }catch(err){gateErr("Couldn't send the link. Check the address and try again.")}
+}
+async function finishEmailLink(email){
+  if(!email){gateErr("Enter the email the link was sent to.");return}
+  try{await auth.signInWithEmailLink(email,location.href);store.del("ignite-email");store.del("ignite-email-pending");
+    try{history.replaceState(null,"",location.pathname)}catch(_){}}
+  catch(err){gateErr("That sign-in link is expired or was already used. Request a new one.");store.del("ignite-email");try{history.replaceState(null,"",location.pathname)}catch(_){}}
+}
+
+/* ---------- Header chip & footer ---------- */
+function renderAuth(){
+  const chip=$("#meChip"), el=$("#authBar");
+  if(!me){chip.hidden=true;el.innerHTML="";return}
+  chip.hidden=false;
+  chip.innerHTML=`<span class="avatar sm" style="--c:var(--accent)">${esc(initials(myName()))}</span><span class="me-name">${esc(myName())}</span>`;
+  el.innerHTML=`<span>Signed in as ${esc(me.email||myName())}${canEdit?" · leader":""}</span><button type="button" class="link-btn" id="editName">Change name</button><button type="button" class="link-btn" id="signOut">Sign out</button>`;
+  $("#signOut").onclick=()=>auth.signOut();
+  $("#editName").onclick=()=>openNameForm(false);
+}
+
+/* ---------- Next up ---------- */
+function renderNext(){
+  const el=$("#nextUp"); if(!me){el.hidden=true;return}
+  el.hidden=view==="leaders"||view==="new";
+  if(!loaded)return;
+  const t=todayIso(); const n=sorted().find(e=>e.date>=t);
+  if(!n){el.className="next empty";el.disabled=true;
+    el.innerHTML=`<div class="info"><div class="eyebrow">Next up</div><h2>No upcoming events yet</h2><div class="facts"><span>${canEdit?"Add the first night from the Leaders tab.":"Check back soon. Leaders are filling in the schedule."}</span></div></div>`;return}
+  const d=parseD(n.date), ty=typeOf(n), mine=myResp(n.id);
+  el.className="next";el.disabled=false;el.onclick=()=>openDetail(n.id);
+  el.innerHTML=`<div class="when"><span class="m">${MONTHS[d.getMonth()].slice(0,3)}</span><span class="d">${d.getDate()}</span></div>
+  <div class="info"><div class="eyebrow">Next up · ${DOW[d.getDay()]}${n.time?" · "+esc(timeRange(n)):""} · ${ty.label}</div>
+  <h2>${esc(n.title)}</h2>
+  <div class="facts">${n.leader?`<span><b>Leader</b> ${esc(n.leader)}</span>`:""}${n.passage?`<span><b>Passage</b> ${esc(n.passage)}</span>`:""}${n.location?`<span><b>Where</b> ${esc(n.location)}</span>`:""}
+  ${n.rsvp?`<span><b>RSVP</b> ${mine&&mine.status==="going"?"You're going":mine&&mine.status==="maybe"?"You said maybe":goingCount(n.id)+" going · tap to reply"}</span>`:""}</div></div>`;
+}
+
+/* ---------- Badges for rows ---------- */
+function badges(e){
+  const mine=myResp(e.id), out=[];
+  if(mine&&mine.status==="going")out.push(`<span class="badge yes">You're going</span>`);
+  else if(mine&&mine.status==="maybe")out.push(`<span class="badge">Maybe</span>`);
+  if(mine&&mine.roles&&mine.roles.length){const names=(e.roles||[]).filter(r=>mine.roles.includes(r.id)).map(r=>r.name);if(names.length)out.push(`<span class="badge yes">You: ${esc(names.join(", "))}</span>`)}
+  if(e.rsvp&&!(mine&&mine.status==="going"))out.push(`<span class="badge">${goingCount(e.id)} going${e.capacity?" / "+e.capacity:""}</span>`);
+  const open=openRoles(e); if(e.roles&&e.roles.length&&open)out.push(`<span class="badge need">${open} helper spot${open>1?"s":""} open</span>`);
+  return out.join("");
+}
+
+/* ---------- List view ---------- */
+function rowHtml(e,past){
+  const d=parseD(e.date), ty=typeOf(e);
+  const facts=[e.time&&`<span><span class="v">${esc(timeRange(e))}</span></span>`,
+    e.leader&&`<span><b>Leader</b><span class="v">${esc(e.leader)}</span></span>`,
+    e.passage&&`<span><b>Passage</b><span class="v">${esc(e.passage)}</span></span>`,
+    e.location&&`<span><b>Where</b><span class="v">${esc(e.location)}</span></span>`].filter(Boolean).join("");
+  const b=past?"":badges(e);
+  return `<button type="button" class="row${past?" past":""}" style="--c:${ty.c}" data-id="${esc(e.id)}">
+    <div class="datebox"><span class="dow">${DOW[d.getDay()]}</span><span class="num">${d.getDate()}</span></div>
+    <div class="body"><div class="top"><h4>${esc(e.title)}</h4><span class="chip" style="--c:${ty.c}">${ty.label}</span></div>
+    ${facts?`<div class="facts">${facts}</div>`:""}${b?`<div class="badges">${b}</div>`:""}</div></button>`;
+}
+function renderList(){
+  const el=$("#listView");
+  if(!loaded){el.innerHTML=`<div class="status"><h3>Loading events…</h3>Fetching the latest schedule.</div>`;return}
+  const t=todayIso(), all=sorted();
+  const up=all.filter(e=>e.date>=t), past=all.filter(e=>e.date<t).reverse();
+  const plans=up.filter(e=>{const m=myResp(e.id);return m&&(m.status==="going"||m.status==="maybe"||(m.roles&&m.roles.length))});
+  let html="";
+  if(plans.length)html+=`<div class="plans"><h3>Your plans</h3><div class="plan-list">${plans.map(e=>{const m=myResp(e.id);
+    const roles=(e.roles||[]).filter(r=>(m.roles||[]).includes(r.id)).map(r=>r.name);
+    return `<button type="button" class="plan" data-id="${esc(e.id)}" style="--c:${typeOf(e).c}"><span class="pd">${shortDate(e.date)}</span><strong>${esc(e.title)}</strong>
+      <span class="pm">${m.status==="going"?"Going":m.status==="maybe"?"Maybe":""}${roles.length?(m.status==="going"||m.status==="maybe"?" · ":"")+"Helping: "+esc(roles.join(", ")):""}</span></button>`}).join("")}</div></div>`;
+  if(!up.length)html+=`<div class="status"><h3>Nothing on the calendar yet</h3>${canEdit?"Open the Leaders tab to add the next Ignite night. You can repeat it weekly in one go.":"Upcoming nights, leaders and passages will show up here."}</div>`;
+  const groups={};up.forEach(e=>{const k=e.date.slice(0,7);(groups[k]=groups[k]||[]).push(e)});
+  Object.keys(groups).forEach(k=>{const [y,m]=k.split("-").map(Number);
+    html+=`<div class="month-group"><h3>${MONTHS[m-1]} ${y}</h3>${groups[k].map(e=>rowHtml(e,false)).join("")}</div>`});
+  if(past.length){
+    html+=`<button type="button" class="btn pastToggle" id="pastBtn">${showPast?"Hide past events":"Show past events ("+past.length+")"}</button>`;
+    if(showPast)html+=`<div class="month-group"><h3>Past</h3>${past.map(e=>rowHtml(e,true)).join("")}</div>`;
+  }
+  el.innerHTML=html;
+  const pb=$("#pastBtn"); if(pb)pb.onclick=()=>{showPast=!showPast;renderList()};
+}
+
+/* ---------- Month view ---------- */
+function renderMonth(){
+  const el=$("#monthView");
+  const y=monthCursor.getFullYear(), m=monthCursor.getMonth();
+  const first=new Date(y,m,1), start=new Date(y,m,1-first.getDay());
+  const byDay={}; events.forEach(e=>{(byDay[e.date]=byDay[e.date]||[]).push(e)});
+  Object.values(byDay).forEach(a=>a.sort((a,b)=>(a.time||"99").localeCompare(b.time||"99")));
+  const t=todayIso();
+  let cells=DOW.map(d=>`<div class="dow-h">${d}</div>`).join("");
+  const weeks=Math.ceil((first.getDay()+new Date(y,m+1,0).getDate())/7);
+  for(let i=0;i<weeks*7;i++){
+    const d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i), k=iso(d), evs=byDay[k]||[];
+    cells+=`<button type="button" class="cell${d.getMonth()!==m?" out":""}${k===t?" today":""}" data-day="${k}" aria-label="${MONTHS[d.getMonth()]} ${d.getDate()}${evs.length?", "+evs.length+" event"+(evs.length>1?"s":""):""}">
+      <span class="n">${d.getDate()}</span>
+      ${evs.slice(0,3).map(e=>`<span class="pill" style="--c:${typeOf(e).c}">${esc(e.time?fmtTime(e.time).replace(":00","")+" ":"")}${esc(e.title)}</span>`).join("")}
+      ${evs.length?`<span class="dots">${evs.map(e=>`<i style="--c:${typeOf(e).c}"></i>`).join("")}</span>`:""}</button>`;
+  }
+  let detail="";
+  if(selectedDay){
+    const evs=byDay[selectedDay]||[], sd=parseD(selectedDay);
+    detail=`<div class="day-detail"><div class="eyebrow">${DOW[sd.getDay()]}, ${MONTHS[sd.getMonth()]} ${sd.getDate()}</div>
+      ${evs.length?evs.map(e=>rowHtml(e,selectedDay<t)).join(""):`<p class="note" style="text-align:left;margin:0">Nothing scheduled this day.</p>`}
+      ${canEdit?`<div><button type="button" class="btn" id="addOnDay">+ Add event on this day</button></div>`:""}</div>`;
+  }
+  el.innerHTML=`<div class="cal"><div class="cal-head"><button type="button" class="icon-btn" id="prevM" aria-label="Previous month">‹</button>
+    <h3>${MONTHS[m]} ${y}</h3><button type="button" class="icon-btn" id="nextM" aria-label="Next month">›</button></div>
+    <div class="grid">${cells}</div>${detail}</div>`;
+  $("#prevM").onclick=()=>{monthCursor=new Date(y,m-1,1);selectedDay=null;renderMonth()};
+  $("#nextM").onclick=()=>{monthCursor=new Date(y,m+1,1);selectedDay=null;renderMonth()};
+  el.querySelectorAll(".cell").forEach(c=>c.onclick=()=>{selectedDay=c.dataset.day;renderMonth()});
+  const ad=$("#addOnDay"); if(ad)ad.onclick=()=>openForm(null,selectedDay);
+}
+
+/* ---------- New here ---------- */
+async function copyText(btn,text){
+  try{await navigator.clipboard.writeText(text);const o=btn.textContent;btn.textContent="Copied";setTimeout(()=>btn.textContent=o,1500)}
+  catch(_){const s=btn.parentElement.querySelector(".cv");if(s){const r=document.createRange();r.selectNodeContents(s);const sel=getSelection();sel.removeAllRanges();sel.addRange(r)}}
+}
+function renderNew(){
+  const el=$("#newView");
+  if(!aboutLoaded){el.innerHTML=`<div class="status"><h3>Loading…</h3></div>`;return}
+  const a=about||{}, ppl=Array.isArray(a.people)?a.people:[];
+  const t=todayIso(), next=me?sorted().find(e=>e.date>=t):null;
+  const facts=[["When we meet",a.when],["Where",a.where],["Who it's for",a.who],["Cost",a.cost]].filter(f=>f[1]);
+  el.innerHTML=`
+  <div class="welcome">
+    <span class="eyebrow">New here? Start here</span>
+    <h2>${esc(a.headline||"Welcome to Ignite")}</h2>
+    ${a.intro?`<p class="lede">${esc(a.intro)}</p>`:`<p class="lede muted">${canEdit?"Tell new people what Ignite is. Use “Edit this page” to add a welcome message, meeting info and your leaders.":"Ignite is our church's young adult ministry. More info is coming soon."}</p>`}
+    ${canEdit?`<div><button type="button" class="btn" id="editAbout">Edit this page</button></div>`:""}
+  </div>
+  ${facts.length?`<div class="basics">${facts.map(f=>`<div class="basic"><span class="k">${f[0]}</span><span class="v">${esc(f[1])}</span></div>`).join("")}</div>`:""}
+  ${next?`<button type="button" class="first-night row" data-id="${esc(next.id)}" style="--c:${typeOf(next).c}">
+      <div class="datebox"><span class="dow">${DOW[parseD(next.date).getDay()]}</span><span class="num">${parseD(next.date).getDate()}</span></div>
+      <div class="body"><span class="eyebrow">Come to the next one</span><h4>${esc(next.title)}</h4>
+      <div class="facts">${next.time?`<span><span class="v">${esc(timeRange(next))}</span></span>`:""}${next.location?`<span><b>Where</b><span class="v">${esc(next.location)}</span></span>`:""}</div></div></button>`:""}
+  ${a.expect?`<section class="nsec"><h3>Your first night</h3><p class="prose">${esc(a.expect)}</p></section>`:""}
+  <section class="nsec"><h3>Meet the leaders</h3>
+    ${ppl.length?`<div class="people">${ppl.map((p,i)=>{const c=contacts[p.id]||{};return `<article class="card">
+      <div class="who-row"><span class="avatar" style="--c:${Object.values(TYPES)[i%5].c}">${esc(initials(p.name))}</span>
+        <div><h4>${esc(p.name)}</h4>${p.role?`<span class="role">${esc(p.role)}</span>`:""}</div></div>
+      ${p.bio?`<p class="bio">${esc(p.bio)}</p>`:""}
+      ${me?(c.phone||c.email?`<div class="contacts">
+        ${c.phone?`<div class="contact"><span class="k">Text / call</span><span class="cv">${esc(c.phone)}</span><button type="button" class="link-btn" data-copy="${esc(c.phone)}">Copy</button></div>`:""}
+        ${c.email?`<div class="contact"><span class="k">Email</span><span class="cv">${esc(c.email)}</span><button type="button" class="link-btn" data-copy="${esc(c.email)}">Copy</button></div>`:""}
+      </div>`:""):`<p class="sub">Sign in to see contact info.</p>`}
+    </article>`}).join("")}</div>`:`<p class="sub">${canEdit?"No leaders added yet. Add them with “Edit this page”.":"Leader info is coming soon."}</p>`}
+  </section>
+  ${a.social||a.contactNote?`<section class="nsec"><h3>Stay connected</h3>${a.contactNote?`<p class="prose">${esc(a.contactNote)}</p>`:""}${a.social?`<p class="prose"><b>Follow:</b> ${esc(a.social)}</p>`:""}</section>`:""}`;
+  el.querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copyText(b,b.dataset.copy));
+  const eb=$("#editAbout"); if(eb)eb.onclick=openAboutForm;
+}
+
+/* ---------- Leader hub ---------- */
+function renderLeaders(){
+  const el=$("#leadersView"); if(!canEdit){el.innerHTML="";return}
+  const t=todayIso(), up=sorted().filter(e=>e.date>=t);
+  const noLeader=up.filter(e=>!e.leader), noPassage=up.filter(e=>e.type==="night"&&!e.passage);
+  const gaps=up.filter(e=>!e.leader||(e.type==="night"&&!e.passage));
+  const soon=iso(new Date(Date.now()+21*864e5));
+  const rolesOpen=up.filter(e=>e.date<=soon&&openRoles(e)>0);
+  const openTotal=rolesOpen.reduce((n,e)=>n+openRoles(e),0);
+  el.innerHTML=`
+  <div class="hub-intro"><div><span class="lock">Leaders only</span><h2 style="margin-top:6px">Leader hub</h2>
+    <p>Fill gaps in the schedule, track RSVPs and helpers, and manage who can edit.</p></div>
+    <button class="btn primary" id="hubAdd" type="button">+ Add event</button></div>
+
+  <div class="stats four">
+    <div class="stat"><span class="k">Upcoming events</span><span class="v">${up.length}</span></div>
+    <div class="stat${noLeader.length?" warn":""}"><span class="k">Need a leader</span><span class="v">${noLeader.length}</span></div>
+    <div class="stat${noPassage.length?" warn":""}"><span class="k">Nights without a passage</span><span class="v">${noPassage.length}</span></div>
+    <div class="stat${openTotal?" warn":""}"><span class="k">Helper spots open (3 wks)</span><span class="v">${openTotal}</span></div>
+  </div>
+
+  <section><h3>Needs a leader or passage <span class="count">${gaps.length?gaps.length+" event"+(gaps.length>1?"s":""):""}</span></h3>
+    ${gaps.length?gaps.slice(0,12).map(e=>`<div class="fix" data-fix="${esc(e.id)}">
+      <div class="t"><strong>${esc(e.title)}</strong><span>${shortDate(e.date)} · ${typeOf(e).label}</span></div>
+      <label>Leader<input list="rosterList" class="fl${e.leader?"":" missing"}" value="${esc(e.leader)}" placeholder="Pick a leader" id="fl-${esc(e.id)}"></label>
+      <label>Passage<input class="fp${e.passage||e.type!=="night"?"":" missing"}" value="${esc(e.passage)}" placeholder="e.g. John 4:1-26" id="fp-${esc(e.id)}"></label>
+      <div class="go"><button type="button" class="btn primary fsave">Save</button></div></div>`).join(""):
+      `<div class="ok">${up.length?"Every upcoming event has a leader, and every Ignite night has a passage.":"No upcoming events yet. Add the next few nights to get started."}</div>`}
+  </section>
+
+  ${rolesOpen.length?`<section><h3>Open helper spots in the next 3 weeks</h3>
+    ${rolesOpen.map(e=>`<button type="button" class="row" data-id="${esc(e.id)}" style="--c:${typeOf(e).c}">
+      <div class="datebox"><span class="dow">${DOW[parseD(e.date).getDay()]}</span><span class="num">${parseD(e.date).getDate()}</span></div>
+      <div class="body"><h4>${esc(e.title)}</h4><div class="badges">${(e.roles||[]).map(r=>{const n=roleTaken(e.id,r.id).length,s=Number(r.slots)||1;
+        return `<span class="badge${n<s?" need":" yes"}">${esc(r.name)} ${n}/${s}</span>`}).join("")}</div></div></button>`).join("")}
+  </section>`:""}
+
+  <section><h3>Upcoming schedule</h3>
+    ${up.length?`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Event</th><th>Leader</th><th>Passage</th><th>Going</th><th>Helpers</th><th></th></tr></thead><tbody>
+    ${up.map(e=>`<tr><td class="date">${shortDate(e.date)}${e.time?`<div class="who">${esc(fmtTime(e.time))}</div>`:""}</td>
+      <td><strong>${esc(e.title)}</strong><div class="who">${typeOf(e).label}${leaderNotes[e.id]&&leaderNotes[e.id].text?" · has leader notes":""}</div><div class="who">${esc(editedBy(e))}</div></td>
+      <td>${e.leader?esc(e.leader):`<span class="gap">Needed</span>`}</td>
+      <td>${e.passage?esc(e.passage):(e.type==="night"?`<span class="gap">Needed</span>`:"—")}</td>
+      <td>${e.rsvp?goingCount(e.id)+(e.capacity?" / "+e.capacity:""):"—"}</td>
+      <td>${e.roles&&e.roles.length?(totalSlots(e)-openRoles(e))+" / "+totalSlots(e):"—"}</td>
+      <td><button type="button" class="link-btn" data-open="${esc(e.id)}">View</button> · <button type="button" class="link-btn" data-edit="${esc(e.id)}">Edit</button></td></tr>`).join("")}
+    </tbody></table></div>`:`<p class="sub">Nothing scheduled yet.</p>`}
+  </section>
+
+  <section><h3>Leader list</h3>
+    <p class="sub">Names that show up as choices when you pick who's leading an event.</p>
+    <div class="roster">${roster.length?roster.map((n,i)=>`<span class="person">${esc(n)}<button type="button" data-rm="${i}" aria-label="Remove ${esc(n)}">✕</button></span>`).join(""):`<span class="sub">No names listed yet.</span>`}</div>
+    <form class="inline-add" id="rosterForm"><input id="rosterName" maxlength="60" placeholder="Add a name, e.g. Sarah M." aria-label="Leader name"><button class="btn" type="submit">Add</button></form>
+    <p class="err" id="rosterErr" hidden></p>
+  </section>
+
+  <section><h3>Leader accounts</h3>
+    <p class="sub">People on this list can edit the site. Use the email they sign in with.</p>
+    <div class="acct-list">${leaders.map(l=>`<div class="acct"><div class="acct-who"><strong>${esc(l.name||l.id)}</strong><span>${esc(l.id)}</span></div>
+      ${l.owner?`<span class="chip" style="--c:var(--accent)">Owner</span>`:(me&&me.email&&me.email.toLowerCase()===l.id?`<span class="sub">You</span>`:`<button type="button" class="btn danger" data-unlead="${esc(l.id)}">Remove</button>`)}</div>`).join("")}</div>
+    <form class="lead-form" id="leadForm" novalidate>
+      <label>Name<input id="lName" maxlength="60" placeholder="Sarah Miller"></label>
+      <label>Sign-in email<input id="lEmail" type="email" maxlength="120" placeholder="sarah@gmail.com"></label>
+      <button class="btn primary" type="submit">Add leader</button>
+    </form>
+    <p class="err" id="leadErr" hidden></p>
+  </section>
+
+  <section><h3>Members <span class="count">${members.length} signed up</span></h3>
+    <p class="sub">Everyone who has signed in to the site.</p>
+    ${members.length?`<div class="tbl-wrap"><table class="narrow"><thead><tr><th>Name</th><th>Email</th><th>Joined</th></tr></thead><tbody>
+      ${members.map(u=>`<tr><td><strong>${esc(u.name||"—")}</strong></td><td class="who">${esc(u.email||"")}</td><td class="who">${u.joinedAt?shortDate(u.joinedAt.slice(0,10)):""}</td></tr>`).join("")}
+    </tbody></table></div>`:""}
+  </section>`;
+
+  $("#hubAdd").onclick=()=>openForm(null);
+  el.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openForm(events.find(e=>e.id===b.dataset.edit)));
+  el.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDetail(b.dataset.open));
+  el.querySelectorAll(".fix").forEach(row=>{
+    const id=row.dataset.fix, btn=row.querySelector(".fsave");
+    btn.onclick=async()=>{btn.disabled=true;btn.textContent="Saving…";
+      try{await db.collection("events").doc(id).update({leader:row.querySelector(".fl").value.trim(),passage:row.querySelector(".fp").value.trim(),...stamp()})}
+      catch(err){btn.disabled=false;btn.textContent="Try again"}};
+  });
+  el.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>saveRoster(roster.filter((_,i)=>i!==Number(b.dataset.rm))));
+  $("#rosterForm").onsubmit=ev=>{ev.preventDefault();const n=$("#rosterName").value.trim();if(!n)return;
+    if(roster.some(r=>r.toLowerCase()===n.toLowerCase())){$("#rosterName").value="";return}
+    saveRoster([...roster,n].sort((a,b)=>a.localeCompare(b)))};
+  el.querySelectorAll("[data-unlead]").forEach(b=>{let armed=false;b.onclick=async()=>{
+    if(!armed){armed=true;b.classList.add("armed");b.textContent="Tap to confirm";setTimeout(()=>{armed=false;b.classList.remove("armed");b.textContent="Remove"},4000);return}
+    b.disabled=true;try{await db.doc("leaders/"+b.dataset.unlead).delete()}catch(err){showErr("#leadErr",err);b.disabled=false}}});
+  $("#leadForm").onsubmit=async ev=>{ev.preventDefault();
+    const email=$("#lEmail").value.trim().toLowerCase(), name=$("#lName").value.trim(), er=$("#leadErr");
+    if(!/^[^\s@\/]+@[^\s@\/]+\.[^\s@\/]+$/.test(email)){er.hidden=false;er.textContent="Enter a full email address, like sarah@gmail.com.";return}
+    try{await db.doc("leaders/"+email).set({name,addedBy:(me&&me.email)||"",addedAt:new Date().toISOString()});er.hidden=true}catch(err){showErr("#leadErr",err)}};
+}
+async function saveRoster(list){try{await db.doc("settings/roster").set({names:list,...stamp()})}catch(err){showErr("#rosterErr",err)}}
+function rosterDatalist(){
+  const all=[...new Set([...roster,...((about&&about.people)||[]).map(p=>p.name),...events.map(e=>e.leader).filter(Boolean)])].sort((a,b)=>a.localeCompare(b));
+  $("#rosterList").innerHTML=all.map(n=>`<option value="${esc(n)}"></option>`).join("");
+}
+
+/* ---------- Render all & views ---------- */
+function renderAll(){
+  renderGate(); renderAuth();
+  const inside=!!me;
+  $("#toolbar").hidden=!inside;
+  if(!inside&&view!=="new"){view="new"}
+  $("#vLeaders").hidden=!canEdit;
+  applyView();
+  renderNext();
+  if(view==="list")renderList(); if(view==="month")renderMonth(); if(view==="leaders")renderLeaders(); if(view==="new")renderNew();
+  $("#footNote").textContent=!auth?"This site isn't connected to its database yet. Add your Firebase settings to firebase-config.js.":
+    inside&&loaded?(canEdit?"You're a leader. Changes show up for everyone right away.":"This calendar updates live as leaders add events."):"";
+}
+function applyView(){
+  ["list","month","new","leaders"].forEach(v=>{
+    const btn={list:"#vList",month:"#vMonth",new:"#vNew",leaders:"#vLeaders"}[v];
+    $(btn).setAttribute("aria-pressed",view===v);
+    $("#"+v+"View").hidden=view!==v;
+  });
+  $("#legend").hidden=view==="leaders"||view==="new";
+}
+function setView(v){
+  if(v==="leaders"&&!canEdit)v="list";
+  if(!me)v="new";
+  view=v; applyView(); renderNext();
+  if(v==="list")renderList(); if(v==="month")renderMonth(); if(v==="leaders")renderLeaders(); if(v==="new")renderNew();
+  try{if(v==="new"&&me){if(location.hash!=="#new-here")location.hash="new-here"}else if(location.hash==="#new-here"&&me){history.replaceState(null,"",location.pathname+location.search)}}catch(_){}
+  if(me)store.set("ignite-view",v);
+}
+$("#vList").onclick=()=>setView("list");$("#vMonth").onclick=()=>setView("month");$("#vNew").onclick=()=>setView("new");$("#vLeaders").onclick=()=>setView("leaders");
+window.addEventListener("hashchange",()=>{if(location.hash==="#new-here"&&view!=="new")setView("new")});
+document.addEventListener("click",e=>{const r=e.target.closest("[data-id]");if(r&&(r.classList.contains("row")||r.classList.contains("plan")))openDetail(r.dataset.id)});
+
+/* ---------- Sheet ---------- */
+const overlay=$("#overlay"), sheet=$("#sheet");
+let openEventId=null;
+function closeSheet(){overlay.hidden=true;sheet.innerHTML="";openEventId=null;delete sheet.dataset.locked}
+overlay.addEventListener("click",e=>{if(e.target===overlay&&!sheet.dataset.locked)closeSheet()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!overlay.hidden&&!sheet.dataset.locked)closeSheet()});
+function showErr(sel,err){const el=$(sel);if(!el)return;el.hidden=false;
+  el.textContent=err&&err.code==="permission-denied"?"You don't have permission to do that. Leaders: make sure your sign-in email is on the leader list.":
+  err&&err.code==="resource-exhausted"?"The site hit its free daily limit. Try again tomorrow.":"Couldn't save just now. Check your connection and try again."}
+
+/* Event detail with RSVP + helper roles */
+function openDetail(id){
+  const e=events.find(x=>x.id===id); if(!e)return;
+  openEventId=id; delete sheet.dataset.locked;
+  const d=parseD(e.date), ty=typeOf(e), past=e.date<todayIso();
+  const rs=respFor(e.id), mine=myResp(e.id)||{status:"",guests:0,roles:[]};
+  const going=rs.filter(r=>r.status==="going"), maybe=rs.filter(r=>r.status==="maybe");
+  const gc=goingCount(e.id), full=e.capacity&&gc>=Number(e.capacity)&&mine.status!=="going";
+  sheet.innerHTML=`<div class="sheet-head"><div><span class="chip" style="--c:${ty.c}">${ty.label}</span>
+    <h2 id="sheetTitle" style="margin-top:8px">${esc(e.title)}</h2></div>
+    <button type="button" class="icon-btn" id="xBtn" aria-label="Close">✕</button></div>
+    <div class="sheet-body"><dl class="dl">
+      <dt>When</dt><dd>${DOW[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}${e.time?" · "+esc(timeRange(e)):""}</dd>
+      ${e.leader?`<dt>Leader</dt><dd>${esc(e.leader)}</dd>`:""}
+      ${e.passage?`<dt>Passage</dt><dd>${esc(e.passage)} · <a href="${passageLink(e.passage)}" target="_blank" rel="noopener">Read it</a></dd>`:""}
+      ${e.location?`<dt>Where</dt><dd>${esc(e.location)}</dd>`:""}
+    </dl>
+    ${e.notes?`<p class="notes">${esc(e.notes)}</p>`:""}
+
+    ${e.rsvp?`<div class="block"><div class="block-head"><h3>Are you coming?</h3><span class="sub">${gc} going${e.capacity?" of "+e.capacity+" spots":""}${maybe.length?" · "+maybe.length+" maybe":""}</span></div>
+      ${past?`<p class="sub">This event has passed.</p>`:`<div class="rsvp" role="group" aria-label="RSVP">
+        <button type="button" data-st="going" aria-pressed="${mine.status==="going"}"${full?" disabled":""}>${full?"Full":"Going"}</button>
+        <button type="button" data-st="maybe" aria-pressed="${mine.status==="maybe"}">Maybe</button>
+        <button type="button" data-st="no" aria-pressed="${mine.status==="no"}">Can't go</button></div>
+      ${mine.status==="going"?`<div class="guests"><span>Bringing anyone?</span><div class="stepper"><button type="button" id="gMinus" aria-label="Fewer guests">−</button><span id="gNum">${Number(mine.guests)||0}</span><button type="button" id="gPlus" aria-label="More guests">+</button></div></div>`:""}`}
+      ${going.length?`<div class="names"><span class="k">Going</span>${going.map(r=>`<span class="nm${r.uid===myId?" me":""}">${esc(r.name)}${r.guests?` +${r.guests}`:""}</span>`).join("")}</div>`:""}
+      ${maybe.length?`<div class="names"><span class="k">Maybe</span>${maybe.map(r=>`<span class="nm${r.uid===myId?" me":""}">${esc(r.name)}</span>`).join("")}</div>`:""}
+    </div>`:""}
+
+    ${e.roles&&e.roles.length?`<div class="block"><div class="block-head"><h3>Help out</h3><span class="sub">${totalSlots(e)-openRoles(e)} of ${totalSlots(e)} spots filled</span></div>
+      <div class="roles">${e.roles.map(r=>{const who=roleTaken(e.id,r.id), s=Number(r.slots)||1, mineR=(mine.roles||[]).includes(r.id), rfull=who.length>=s&&!mineR;
+        return `<div class="role-row"><div class="role-info"><strong>${esc(r.name)}</strong><span class="sub">${who.length}/${s}${who.length?" · "+who.map(w=>esc(w.uid===myId?"you":w.name)).join(", "):""}</span></div>
+        ${past?"":`<button type="button" class="btn${mineR?" on":""}" data-role="${esc(r.id)}"${rfull?" disabled":""}>${mineR?"Signed up ✓":rfull?"Full":"Sign up"}</button>`}</div>`}).join("")}</div>
+      ${(mine.roles||[]).length&&!past?`<p class="sub">Tap a role you signed up for to drop it.</p>`:""}
+    </div>`:""}
+
+    <p class="err" id="rsvpErr" hidden></p>
+    ${canEdit&&leaderNotes[e.id]&&leaderNotes[e.id].text?`<div class="private"><span class="lock">Leaders only</span><p>${esc(leaderNotes[e.id].text)}</p></div>`:""}
+    ${canEdit&&e.updatedAt?`<p class="edited">${esc(editedBy(e))}</p>`:""}
+    ${canEdit?`<div class="actions">${e.rsvp||(e.roles&&e.roles.length)?`<button type="button" class="btn" id="copyList">Copy RSVP list</button>`:""}<button type="button" class="btn danger" id="delBtn">Delete</button><button type="button" class="btn" id="dupBtn">Duplicate</button><button type="button" class="btn primary" id="editBtn">Edit</button></div><p class="err" id="sheetErr" hidden></p>`:""}
+    </div>`;
+  overlay.hidden=false; $("#xBtn").onclick=closeSheet;
+  sheet.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>saveResponse(e,{status:mine.status===b.dataset.st?"":b.dataset.st}));
+  const gm=$("#gMinus"),gp=$("#gPlus");
+  if(gm)gm.onclick=()=>saveResponse(e,{guests:Math.max(0,(Number(mine.guests)||0)-1)});
+  if(gp)gp.onclick=()=>{const g=(Number(mine.guests)||0)+1;if(e.capacity&&gc+1>Number(e.capacity))return;saveResponse(e,{guests:Math.min(10,g)})};
+  sheet.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{const r=b.dataset.role, cur=mine.roles||[];
+    saveResponse(e,{roles:cur.includes(r)?cur.filter(x=>x!==r):[...cur,r]})});
+  if(canEdit){
+    $("#editBtn").onclick=()=>openForm(e);
+    $("#dupBtn").onclick=()=>openForm({...e,id:null,date:"",_lnotes:(leaderNotes[e.id]||{}).text||""});
+    const cl=$("#copyList"); if(cl)cl.onclick=()=>{
+      const lines=[e.title+" — "+shortDate(e.date),""];
+      if(e.rsvp){lines.push("Going ("+gc+"):");going.forEach(r=>lines.push("- "+r.name+(r.guests?" +"+r.guests:"")));if(maybe.length){lines.push("","Maybe:");maybe.forEach(r=>lines.push("- "+r.name))}}
+      (e.roles||[]).forEach(r=>{lines.push("",r.name+":");roleTaken(e.id,r.id).forEach(w=>lines.push("- "+w.name))});
+      copyText(cl,lines.join("\n"))};
+    const del=$("#delBtn"); let armed=false;
+    del.onclick=async()=>{
+      if(!armed){armed=true;del.classList.add("armed");del.textContent="Tap again to delete";setTimeout(()=>{armed=false;del.classList.remove("armed");del.textContent="Delete"},4000);return}
+      del.disabled=true;
+      try{const b=db.batch();b.delete(db.collection("events").doc(e.id));
+        if(leaderNotes[e.id])b.delete(db.collection("leaderNotes").doc(e.id));
+        respFor(e.id).forEach(r=>b.delete(db.collection("events").doc(e.id).collection("responses").doc(r.uid)));
+        await b.commit();closeSheet()}catch(err){showErr("#sheetErr",err);del.disabled=false}
+    };
+  }
+}
+let saving=false;
+async function saveResponse(e,patch){
+  if(saving||!myId)return; saving=true;
+  const cur=myResp(e.id)||{status:"",guests:0,roles:[]};
+  const next={status:cur.status||"",guests:Number(cur.guests)||0,roles:(cur.roles||[]).slice(),...patch};
+  if(next.status!=="going")next.guests=0;
+  const ref=db.collection("events").doc(e.id).collection("responses").doc(myId);
+  try{
+    if(!next.status&&!next.roles.length)await ref.delete();
+    else await ref.set({uid:myId,eventId:e.id,eventDate:e.date,name:myName(),status:next.status,guests:next.guests,roles:next.roles,updatedAt:new Date().toISOString()});
+  }catch(err){showErr("#rsvpErr",err)}
+  saving=false;
+}
+
+/* Name prompt */
+function openNameForm(required){
+  sheet.dataset.locked=required?"1":"";if(!required)delete sheet.dataset.locked;
+  sheet.innerHTML=`<div class="sheet-head"><h2 id="sheetTitle">${required?"Welcome! What's your name?":"Change your name"}</h2>${required?"":`<button type="button" class="icon-btn" id="xBtn" aria-label="Close">✕</button>`}</div>
+    <div class="sheet-body"><form id="nameForm" novalidate><p class="sub" style="margin:0">This is how you'll show up on RSVP and helper lists.</p>
+    <label>First and last name<input id="nmIn" maxlength="60" autocomplete="name" value="${esc(myName()==="Someone"?"":myName())}"></label>
+    <p class="err" id="nmErr" hidden></p>
+    <div class="actions"><button type="submit" class="btn primary">Save</button></div></form></div>`;
+  overlay.hidden=false; $("#nmIn").focus();
+  const x=$("#xBtn"); if(x)x.onclick=closeSheet;
+  $("#nameForm").onsubmit=async ev=>{ev.preventDefault();const n=$("#nmIn").value.trim();
+    if(n.length<2){const er=$("#nmErr");er.hidden=false;er.textContent="Enter your name.";return}
+    try{await db.doc("users/"+myId).set({name:n,email:(me.email||"").toLowerCase(),joinedAt:(profile&&profile.joinedAt)||new Date().toISOString(),lastSeen:new Date().toISOString()});
+      const mineAll=responses.filter(r=>r.uid===myId&&r.name!==n);
+      for(const r of mineAll){try{await db.collection("events").doc(r.eventId).collection("responses").doc(myId).update({name:n})}catch(_){}}
+      delete sheet.dataset.locked;closeSheet()}catch(err){showErr("#nmErr",err)}};
+}
+
+/* Event form (leaders) */
+function roleRow(r){return `<div class="role-edit" data-rid="${esc(r.id)}"><input class="rn" maxlength="40" value="${esc(r.name)}" placeholder="Role, e.g. Setup" aria-label="Role name"><input class="rs" type="number" min="1" max="50" value="${Number(r.slots)||1}" aria-label="Spots"><button type="button" class="icon-btn rrm" aria-label="Remove role">✕</button></div>`}
+function openForm(e,presetDate){
+  delete sheet.dataset.locked;
+  const isNew=!e||!e.id; e=e||{};
+  const typeOpts=Object.entries(TYPES).map(([k,t])=>`<option value="${k}"${(e.type||"night")===k?" selected":""}>${t.label}</option>`).join("");
+  let roles=(e.roles||[]).map(r=>({...r}));
+  const rsvpOn=e.rsvp!==undefined?!!e.rsvp:false;
+  sheet.innerHTML=`<div class="sheet-head"><h2 id="sheetTitle">${isNew?"Add event":"Edit event"}</h2>
+    <button type="button" class="icon-btn" id="xBtn" aria-label="Close">✕</button></div>
+    <div class="sheet-body"><form id="evForm" novalidate>
+      <label>Title<input id="fTitle" required maxlength="120" placeholder="e.g. Ignite Night: Who is my neighbor?" value="${esc(e.title)}"></label>
+      <div class="f-row"><label>Date<input id="fDate" type="date" required value="${esc(e.date||presetDate||"")}"></label>
+        <label>Type<select id="fType">${typeOpts}</select></label></div>
+      <div class="f-row"><label>Start time<input id="fTime" type="time" value="${esc(e.time||"19:00")}"></label>
+        <label>End time<input id="fEnd" type="time" value="${esc(e.endTime||"")}"></label></div>
+      <div class="f-row"><label>Leader<input id="fLeader" list="rosterList" maxlength="80" placeholder="Who's leading" value="${esc(e.leader)}"></label>
+        <label>Passage<input id="fPassage" maxlength="80" placeholder="e.g. Luke 10:25-37" value="${esc(e.passage)}"></label></div>
+      <label>Location<input id="fLoc" maxlength="120" placeholder="e.g. Youth room" value="${esc(e.location)}"></label>
+      <label>Notes for everyone<textarea id="fNotes" maxlength="2000" placeholder="Food, what to bring, rides…">${esc(e.notes)}</textarea></label>
+
+      <fieldset class="pf"><legend>RSVPs</legend>
+        <label class="check"><input type="checkbox" id="fRsvp"${rsvpOn?" checked":""}> Ask people if they're coming</label>
+        <label id="capWrap"${rsvpOn?"":" hidden"}>Spots available (leave blank for no limit)<input id="fCap" type="number" min="1" max="2000" value="${esc(e.capacity||"")}" placeholder="e.g. 30"></label>
+      </fieldset>
+
+      <fieldset class="pf"><legend>Helper roles</legend>
+        <p class="sub" style="margin:0">People can sign up for these. Set how many spots each role has.</p>
+        <div id="rolesEd" class="roles-ed"></div>
+        <div class="ideas">${ROLE_IDEAS.map(n=>`<button type="button" class="idea" data-idea="${esc(n)}">+ ${esc(n)}</button>`).join("")}<button type="button" class="idea" id="addRole">+ Custom role</button></div>
+      </fieldset>
+
+      <label>Leader-only notes<textarea id="fLNotes" maxlength="4000" placeholder="Discussion questions, setup, who's on worship… Members can't see this.">${esc(e.id?(leaderNotes[e.id]||{}).text:(e._lnotes||""))}</textarea></label>
+      ${isNew?`<label>Repeat<select id="fRepeat"><option value="1">Just this once</option><option value="4">Weekly for 4 weeks</option><option value="8">Weekly for 8 weeks</option><option value="12">Weekly for 12 weeks</option></select></label>`:""}
+      <p class="err" id="formErr" hidden></p>
+      <div class="actions"><button type="button" class="btn" id="cancelBtn">Cancel</button><button type="submit" class="btn primary" id="saveBtn">${isNew?"Add to calendar":"Save changes"}</button></div>
+    </form></div>`;
+  overlay.hidden=false;
+  $("#xBtn").onclick=closeSheet; $("#cancelBtn").onclick=closeSheet; $("#fTitle").focus();
+  $("#fRsvp").onchange=()=>{$("#capWrap").hidden=!$("#fRsvp").checked};
+  $("#fType").onchange=()=>{if(isNew&&["social","special"].includes($("#fType").value)){$("#fRsvp").checked=true;$("#capWrap").hidden=false}};
+  const readRoles=()=>[...document.querySelectorAll("#rolesEd .role-edit")].map(r=>({id:r.dataset.rid,name:r.querySelector(".rn").value.trim(),slots:Math.max(1,Math.min(50,Number(r.querySelector(".rs").value)||1))}));
+  const drawRoles=()=>{$("#rolesEd").innerHTML=roles.map(roleRow).join("");
+    document.querySelectorAll("#rolesEd .rrm").forEach(b=>b.onclick=()=>{roles=readRoles();roles=roles.filter(r=>r.id!==b.closest(".role-edit").dataset.rid);drawRoles()})};
+  drawRoles();
+  document.querySelectorAll("[data-idea]").forEach(b=>b.onclick=()=>{roles=readRoles();roles.push({id:rid(),name:b.dataset.idea,slots:1});drawRoles()});
+  $("#addRole").onclick=()=>{roles=readRoles();roles.push({id:rid(),name:"",slots:1});drawRoles();const ins=document.querySelectorAll("#rolesEd .rn");ins[ins.length-1].focus()};
+  $("#evForm").onsubmit=async ev=>{
+    ev.preventDefault();
+    const title=$("#fTitle").value.trim(), date=$("#fDate").value, fe=$("#formErr");
+    if(!title||!date){fe.hidden=false;fe.textContent="Add a title and a date.";return}
+    const rsvp=$("#fRsvp").checked, cap=rsvp&&$("#fCap").value?Number($("#fCap").value):null;
+    const body={title,date,type:$("#fType").value,time:$("#fTime").value,endTime:$("#fEnd").value,
+      leader:$("#fLeader").value.trim(),passage:$("#fPassage").value.trim(),location:$("#fLoc").value.trim(),
+      notes:$("#fNotes").value.trim(),rsvp,capacity:cap,roles:readRoles().filter(r=>r.name),...stamp()};
+    const lnotes=$("#fLNotes").value.trim();
+    const btn=$("#saveBtn"); btn.disabled=true; btn.textContent="Saving…";
+    try{
+      const col=db.collection("events");
+      if(isNew){
+        const n=Number(($("#fRepeat")||{}).value||1), base=parseD(date), b=db.batch();
+        for(let i=0;i<n;i++){const d=new Date(base.getFullYear(),base.getMonth(),base.getDate()+7*i), ref=col.doc();
+          b.set(ref,i===0?body:{...body,date:iso(d),leader:"",passage:"",roles:body.roles.map(r=>({...r,id:rid()}))});
+          if(i===0&&lnotes)b.set(db.collection("leaderNotes").doc(ref.id),{text:lnotes,...stamp()});}
+        await b.commit();
+      }else{
+        const b=db.batch(); b.set(col.doc(e.id),body);
+        const had=(leaderNotes[e.id]||{}).text||"";
+        if(lnotes!==had){const nref=db.collection("leaderNotes").doc(e.id);if(lnotes)b.set(nref,{text:lnotes,...stamp()});else b.delete(nref)}
+        if(body.date!==e.date)respFor(e.id).forEach(r=>b.update(col.doc(e.id).collection("responses").doc(r.uid),{eventDate:body.date}));
+        await b.commit();
+      }
+      closeSheet();
+    }catch(err){showErr("#formErr",err);btn.disabled=false;btn.textContent=isNew?"Add to calendar":"Save changes"}
+  };
+}
+
+/* About form (leaders) */
+function personRow(p,i){const c=contacts[p.id]||p;return `<fieldset class="pf" data-i="${i}" data-pid="${esc(p.id)}"><legend>Leader ${i+1}</legend>
+  <div class="f-row"><label>Name<input class="pn" maxlength="60" value="${esc(p.name)}" placeholder="Sarah Miller"></label>
+  <label>Role<input class="pr" maxlength="60" value="${esc(p.role)}" placeholder="e.g. Worship, Small groups"></label></div>
+  <div class="f-row"><label>Phone<input class="pp" maxlength="30" value="${esc(c.phone)}" placeholder="(509) 555-0123"></label>
+  <label>Email<input class="pe" maxlength="80" value="${esc(c.email)}" placeholder="name@email.com"></label></div>
+  <label>Short bio<textarea class="pb" maxlength="400" placeholder="A sentence or two so new people know who you are.">${esc(p.bio)}</textarea></label>
+  <div><button type="button" class="btn danger prm">Remove leader</button></div></fieldset>`}
+function openAboutForm(){
+  delete sheet.dataset.locked;
+  const a=about||{}; let ppl=(Array.isArray(a.people)?a.people:[]).map(p=>({...p,id:p.id||rid()}));
+  sheet.innerHTML=`<div class="sheet-head"><h2 id="sheetTitle">Edit “New here”</h2><button type="button" class="icon-btn" id="xBtn" aria-label="Close">✕</button></div>
+  <div class="sheet-body"><form id="aboutForm" novalidate>
+    <label>Headline<input id="aHead" maxlength="80" value="${esc(a.headline||"Welcome to Ignite")}"></label>
+    <label>What is Ignite?<textarea id="aIntro" maxlength="1200" placeholder="Ignite is the young adult ministry at… We meet to…">${esc(a.intro)}</textarea></label>
+    <div class="f-row"><label>When we meet<input id="aWhen" maxlength="80" value="${esc(a.when)}" placeholder="Thursdays, 7–9 PM"></label>
+      <label>Where<input id="aWhere" maxlength="120" value="${esc(a.where)}" placeholder="Church name, room, address"></label></div>
+    <div class="f-row"><label>Who it's for<input id="aWho" maxlength="80" value="${esc(a.who)}" placeholder="Ages 18–30, college & working"></label>
+      <label>Cost<input id="aCost" maxlength="60" value="${esc(a.cost)}" placeholder="Free"></label></div>
+    <label>Your first night (what to expect)<textarea id="aExpect" maxlength="1200" placeholder="Show up a few minutes early, grab food, we do worship, then a short teaching and small groups…">${esc(a.expect)}</textarea></label>
+    <div id="pList" class="plist"></div>
+    <div><button type="button" class="btn" id="addPerson">+ Add a leader</button></div>
+    <label>Stay connected note<textarea id="aNote" maxlength="600" placeholder="Text any leader and we'll add you to the group chat.">${esc(a.contactNote)}</textarea></label>
+    <label>Social media<input id="aSocial" maxlength="120" value="${esc(a.social)}" placeholder="Instagram @ignite…"></label>
+    <p class="callout">The welcome info, names, roles and bios are public. Phone numbers and emails only show to people who are signed in.</p>
+    <p class="err" id="aboutErr" hidden></p>
+    <div class="actions"><button type="button" class="btn" id="cancelBtn">Cancel</button><button type="submit" class="btn primary" id="saveAbout">Save page</button></div>
+  </form></div>`;
+  overlay.hidden=false; $("#xBtn").onclick=closeSheet; $("#cancelBtn").onclick=closeSheet;
+  const readPeople=()=>[...document.querySelectorAll("#pList .pf")].map(f=>({id:f.dataset.pid,name:f.querySelector(".pn").value.trim(),role:f.querySelector(".pr").value.trim(),phone:f.querySelector(".pp").value.trim(),email:f.querySelector(".pe").value.trim(),bio:f.querySelector(".pb").value.trim()}));
+  const drawPeople=()=>{$("#pList").innerHTML=ppl.map(personRow).join("");
+    document.querySelectorAll("#pList .prm").forEach(b=>b.onclick=()=>{ppl=readPeople();ppl.splice(Number(b.closest(".pf").dataset.i),1);drawPeople()})};
+  drawPeople();
+  $("#addPerson").onclick=()=>{ppl=readPeople();ppl.push({id:rid()});drawPeople();const f=document.querySelectorAll("#pList .pn");f[f.length-1].focus()};
+  $("#aHead").focus();
+  $("#aboutForm").onsubmit=async ev=>{ev.preventDefault();
+    const people=readPeople().filter(p=>p.name);
+    const body={headline:$("#aHead").value.trim(),intro:$("#aIntro").value.trim(),when:$("#aWhen").value.trim(),where:$("#aWhere").value.trim(),
+      who:$("#aWho").value.trim(),cost:$("#aCost").value.trim(),expect:$("#aExpect").value.trim(),contactNote:$("#aNote").value.trim(),social:$("#aSocial").value.trim(),
+      people:people.map(p=>({id:p.id,name:p.name,role:p.role,bio:p.bio})),...stamp()};
+    const byId={};people.forEach(p=>{if(p.phone||p.email)byId[p.id]={phone:p.phone,email:p.email}});
+    const btn=$("#saveAbout");btn.disabled=true;btn.textContent="Saving…";
+    try{const b=db.batch();b.set(db.doc("settings/about"),body);b.set(db.doc("settings/contacts"),{byId,...stamp()});await b.commit();closeSheet()}
+    catch(err){showErr("#aboutErr",err);btn.disabled=false;btn.textContent="Save page"}
+  };
+}
+
+/* ---------- Data subscriptions ---------- */
+function stopAll(list){list.forEach(u=>{try{u()}catch(_){}});list.length=0}
+function startMember(){
+  stopAll(memberUnsubs);
+  const timer=setTimeout(()=>{if(!loaded){loaded=true;renderAll();$("#footNote").textContent="Can't reach the calendar right now. It will update as soon as it connects."}},10000);
+  memberUnsubs.push(db.collection("events").onSnapshot(snap=>{
+    events=snap.docs.map(d=>({id:d.id,...d.data()})).filter(e=>e.date&&e.title);
+    clearTimeout(timer);loaded=true;if(canEdit)rosterDatalist();renderAll();refreshSheet();
+  },err=>{clearTimeout(timer);loaded=true;renderAll();$("#footNote").textContent="The calendar couldn't load. Try refreshing the page."}));
+  memberUnsubs.push(db.collectionGroup("responses").onSnapshot(snap=>{
+    responses=snap.docs.map(d=>({...d.data(),uid:d.id}));renderAll();refreshSheet();
+  },()=>{}));
+  memberUnsubs.push(db.doc("settings/contacts").onSnapshot(s=>{contacts=(s.exists&&s.data().byId)||{};if(view==="new")renderNew()},()=>{}));
+  memberUnsubs.push(db.doc("users/"+myId).onSnapshot(s=>{profile=s.exists?s.data():null;
+    if(!profileLoaded){profileLoaded=true;
+      if(!profile&&me.displayName&&me.displayName.trim().length>1){db.doc("users/"+myId).set({name:me.displayName.trim(),email:(me.email||"").toLowerCase(),joinedAt:new Date().toISOString(),lastSeen:new Date().toISOString()}).catch(()=>{})}
+      else if(!profile)openNameForm(true);
+      else db.doc("users/"+myId).update({lastSeen:new Date().toISOString()}).catch(()=>{});
+    }
+    renderAuth();
+  },()=>{}));
+}
+function startLeader(){
+  stopAll(leaderUnsubs);
+  leaderUnsubs.push(db.doc("settings/roster").onSnapshot(s=>{roster=(s.exists&&Array.isArray(s.data().names))?s.data().names.slice():[];rosterDatalist();if(view==="leaders")renderLeaders()},()=>{}));
+  leaderUnsubs.push(db.collection("leaderNotes").onSnapshot(s=>{leaderNotes={};s.docs.forEach(d=>leaderNotes[d.id]=d.data());if(view==="leaders")renderLeaders()},()=>{}));
+  leaderUnsubs.push(db.collection("leaders").onSnapshot(s=>{leaders=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.owner?1:0)-(a.owner?1:0)||String(a.name||a.id).localeCompare(String(b.name||b.id)));if(view==="leaders")renderLeaders()},()=>{}));
+  leaderUnsubs.push(db.collection("users").onSnapshot(s=>{members=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));if(view==="leaders")renderLeaders()},()=>{}));
+}
+function refreshSheet(){if(openEventId&&!overlay.hidden&&sheet.querySelector(".rsvp,.roles,.dl")&&!sheet.querySelector("form"))openDetail(openEventId)}
+
+/* ---------- Boot ---------- */
+(function(){
+  const cfg=window.IGNITE_FIREBASE;
+  if(!window.firebase||!cfg||!cfg.apiKey||/PASTE/.test(cfg.apiKey)){aboutLoaded=true;renderAll();return}
+  firebase.initializeApp(cfg); db=firebase.firestore(); auth=firebase.auth();
+  db.doc("settings/about").onSnapshot(s=>{about=s.exists?s.data():null;aboutLoaded=true;if(canEdit)rosterDatalist();if(view==="new")renderNew()},()=>{aboutLoaded=true;if(view==="new")renderNew()});
+  auth.getRedirectResult().catch(()=>{});
+  if(auth.isSignInWithEmailLink(location.href)){const em=store.get("ignite-email");if(em)finishEmailLink(em)}
+  auth.onAuthStateChanged(async u=>{
+    me=u; myId=u?u.uid:null; profile=null; profileLoaded=false;
+    stopAll(memberUnsubs); stopAll(leaderUnsubs);
+    events=[];responses=[];contacts={};leaderNotes={};leaders=[];members=[];roster=[];loaded=false;canEdit=false;
+    if(!overlay.hidden)closeSheet();
+    if(u){
+      store.del("ignite-email-pending");
+      try{canEdit=u.email?(await db.doc("leaders/"+u.email.toLowerCase()).get()).exists:false}catch(_){canEdit=false}
+      startMember(); if(canEdit)startLeader();
+      view=location.hash==="#new-here"?"new":(["list","month","new","leaders"].includes(savedView)?savedView:"list");
+      if(view==="leaders"&&!canEdit)view="list";
+    }else{view="new"}
+    renderAll();
+  });
+  renderAll();
+})();
+</script>
+
+</body>
+</html>
